@@ -1,0 +1,10 @@
+.\objects\lfs.o: LittleFS\lfs.c
+.\objects\lfs.o: LittleFS\lfs.h
+.\objects\lfs.o: LittleFS\lfs_util.h
+.\objects\lfs.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\lfs.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\lfs.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\string.h
+.\objects\lfs.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\inttypes.h
+.\objects\lfs.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\lfs.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\assert.h
+.\objects\lfs.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\stdio.h
