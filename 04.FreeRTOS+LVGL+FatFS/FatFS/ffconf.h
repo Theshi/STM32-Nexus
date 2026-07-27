@@ -25,14 +25,14 @@
 #define FF_FS_MINIMIZE	0
 
 #define FF_USE_FIND		0	/* 文件搜索功能 f_findfirst/f_findnext（0=禁用） */
-#define FF_USE_MKFS		0	/* 格式化功能 f_mkfs（开发阶段建议 1） */
+#define FF_USE_MKFS		1	/* 格式化功能 f_mkfs（开发阶段建议 1） */
 #define FF_USE_FASTSEEK	0	/* 快速定位 f_lseek（0=禁用） */
 #define FF_USE_EXPAND	0	/* 文件预分配 f_expand（0=禁用） */
 #define FF_USE_CHMOD		0	/* 属性修改 f_chmod/f_utime（0=禁用） */
 #define FF_USE_LABEL		0	/* 卷标操作 f_getlabel/f_setlabel（0=禁用） */
 #define FF_USE_FORWARD	0	/* 数据转发 f_forward（0=禁用） */
 
-#define FF_USE_STRFUNC	0	/* 字符串 I/O 函数 f_gets/f_putc/f_puts/f_printf */
+#define FF_USE_STRFUNC	1	/* 字符串 I/O 函数 f_gets/f_putc/f_puts/f_printf */
 #define FF_PRINT_LLI		1	/* f_printf 支持 long long（需 C99） */
 #define FF_PRINT_FLOAT	1	/* f_printf 支持浮点数 */
 #define FF_STRF_ENCODE	3	/* 文件字符串编码：3=UTF-8 */
@@ -111,7 +111,7 @@
 /*   GET_SECTOR_SIZE 命令                                       */
 /*=============================================================*/
 #define FF_MIN_SS		512
-#define FF_MAX_SS		4096
+#define FF_MAX_SS		512
 
 #define FF_LBA64		0		/* 64 位 LBA（需 exFAT 支持） */
 #define FF_MIN_GPT		0x10000000	/* GPT 分区最小扇区数 */

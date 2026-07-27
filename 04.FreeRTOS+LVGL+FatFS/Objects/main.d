@@ -165,3 +165,7 @@
 .\objects\main.o: .\LVGL\src/extra/libs/ffmpeg/lv_ffmpeg.h
 .\objects\main.o: .\LVGL\port\lv_port_disp_template.h
 .\objects\main.o: .\LVGL\port\lv_port_indev_template.h
+.\objects\main.o: .\BSP\bsp_sdcard\bsp_sdio_sdcard.h
+.\objects\main.o: .\FatFS\ffconf.h
+.\objects\main.o: .\FatFS\ff.h
+.\objects\main.o: .\FatFS\ffconf.h
