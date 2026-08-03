@@ -4,6 +4,9 @@
 #include "stm32f10x.h"
 #include <stdio.h>
 
+#include "diskio.h"
+#include "integer.h"
+
 //#define  sFLASH_ID              0xEF3015   //W25X16
 //#define  sFLASH_ID              0xEF4015	 //W25Q16
 //#define  sFLASH_ID              0XEF4018   //W25Q128
@@ -74,6 +77,7 @@
 
 /*ÐÅÏ¢Êä³ö*/
 #define FLASH_DEBUG_ON         1
+#define FLASH_DEBUG_FUNC_ON    0
 
 #define FLASH_INFO(fmt,arg...)           printf("<<-FLASH-INFO->> "fmt"\n",##arg)
 #define FLASH_ERROR(fmt,arg...)          printf("<<-FLASH-ERROR->> "fmt"\n",##arg)
@@ -81,6 +85,11 @@
                                           if(FLASH_DEBUG_ON)\
                                           printf("<<-FLASH-DEBUG->> [%d]"fmt"\n",__LINE__, ##arg);\
                                           }while(0)
+
+#define FLASH_DEBUG_FUNC()               do{\
+                                         if(FLASH_DEBUG_FUNC_ON)\
+                                         printf("<<-FLASH-FUNC->> Func:%s@Line:%d\n",__func__,__LINE__);\
+                                       }while(0)
 
 void SPI_FLASH_Init(void);
 void SPI_FLASH_SectorErase(u32 SectorAddr);
@@ -100,9 +109,14 @@ u8 SPI_FLASH_SendByte(u8 byte);
 u16 SPI_FLASH_SendHalfWord(u16 HalfWord);
 void SPI_FLASH_WriteEnable(void);
 void SPI_FLASH_WaitForWriteEnd(void);
-																					
 
+
+/*Fatfs*/
+DSTATUS TM_FATFS_FLASH_SPI_disk_initialize(void);
+DSTATUS TM_FATFS_FLASH_SPI_disk_status(void) ;
+DRESULT TM_FATFS_FLASH_SPI_disk_ioctl(BYTE cmd, char *buff) ;
+DRESULT TM_FATFS_FLASH_SPI_disk_read(BYTE *buff, DWORD sector, UINT count) ;
+DRESULT TM_FATFS_FLASH_SPI_disk_write(BYTE *buff, DWORD sector, UINT count) ;
 
 #endif /* __SPI_FLASH_H */
-
 

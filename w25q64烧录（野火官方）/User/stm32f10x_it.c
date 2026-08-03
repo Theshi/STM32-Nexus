@@ -13,9 +13,7 @@
   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTI
-  
-  AL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
   *
@@ -24,9 +22,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f10x_it.h"
-
-
+#include "stm32f10x_it.h"	
 
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
@@ -131,14 +127,7 @@ void PendSV_Handler(void)
 {
 }
 
-/**
-  * @brief  This function handles SysTick Handler.
-  * @param  None
-  * @retval None
-  */
-void SysTick_Handler(void)
-{
-}
+
 
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
@@ -156,23 +145,6 @@ void SysTick_Handler(void)
 {
 }*/
 
-/**
-  * @}
-  */ 
-
-
-// EXTI Line --> PF9
-//void macXPT2046_EXTI_INT_FUNCTION ( void )
-//{ 
-//  if ( EXTI_GetITStatus ( macXPT2046_EXTI_LINE ) != RESET )
-//  {	
-//    ucXPT2046_TouchFlag = 1;
-//		
-//    EXTI_ClearITPendingBit ( macXPT2046_EXTI_LINE );
-//		
-//  }
-//	
-//}
 
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

@@ -30,3 +30,5 @@
 ..\..\output\bsp_spi_flash.o: ..\..\Libraries\FWlib\inc\stm32f10x_wwdg.h
 ..\..\output\bsp_spi_flash.o: ..\..\Libraries\FWlib\inc\misc.h
 ..\..\output\bsp_spi_flash.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\stdio.h
+..\..\output\bsp_spi_flash.o: ..\..\User\FATFS\diskio.h
+..\..\output\bsp_spi_flash.o: ..\..\User\FATFS\integer.h

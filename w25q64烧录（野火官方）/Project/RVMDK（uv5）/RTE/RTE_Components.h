@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'BH-F103' 
- * Target:  'ºº×Ö' 
+ * Target:  'fatfs' 
  */
 
 #ifndef RTE_COMPONENTS_H

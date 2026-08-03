@@ -189,7 +189,8 @@
   ******************************************************************************  
   */ 
 #include "./sdio/bsp_sdio_sdcard.h"
-#include "./usart/bsp_usart.h"		
+#include <stdio.h>
+#include <string.h>
 
 /* Private macro -------------------------------------------------------------*/
 /** 
@@ -340,19 +341,19 @@ void SD_DeInit(void)
  * 输入  ：无
  * 输出  ：无
  */
-static void NVIC_Configuration(void)
-{
-  NVIC_InitTypeDef NVIC_InitStructure;
+//static void NVIC_Configuration(void)
+//{
+//  NVIC_InitTypeDef NVIC_InitStructure;
 
-  /* Configure the NVIC Preemption Priority Bits */
-  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+//  /* Configure the NVIC Preemption Priority Bits */
+//  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
 
-  NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-}
+//  NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
+//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+//  NVIC_Init(&NVIC_InitStructure);
+//}
 
 /**
   * @brief  Returns the DMA End Of Transfer Status.
@@ -385,8 +386,8 @@ void SD_DMA_RxConfig(uint32_t *BufferDST, uint32_t BufferSize)
   /*!< DMA2 Channel4 Config */
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)SDIO_FIFO_ADDRESS;  //外设地址，fifo
   DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)BufferDST; //目标地址
-  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;	//外设为源地址
-  DMA_InitStructure.DMA_BufferSize = BufferSize / 4;  //除以4，把字转成字节单位
+  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;	//外设为原地址
+  DMA_InitStructure.DMA_BufferSize = BufferSize / 4;  //1/4缓存大小
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;//使能外设地址不自增
   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;	  //使能存储目标地址自增
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;  //外设数据大小为字，32位
@@ -480,7 +481,7 @@ SD_Error SD_Init(void)
 	/*重置SD_Error状态*/
   SD_Error errorstatus = SD_OK;
   
-	NVIC_Configuration();
+//	NVIC_Configuration();
 	
   /* SDIO 外设底层引脚初始化 */
   GPIO_Configuration();
@@ -509,6 +510,7 @@ SD_Error SD_Init(void)
 
   /* 配置SDIO外设
    * 上电识别，卡初始化都完成后，进入数据传输模式，提高读写速度
+   * 速度若超过24M要进入bypass模式 
    */
   
   /* SDIOCLK = HCLK, SDIO_CK = HCLK/(2 + SDIO_TRANSFER_CLK_DIV) */  
@@ -517,7 +519,7 @@ SD_Error SD_Init(void)
 	/*上升沿采集数据 */
   SDIO_InitStructure.SDIO_ClockEdge = SDIO_ClockEdge_Rising;
 
-	/* Bypass模式使能的话，SDIO_CK不经过SDIO_ClockDiv分频 */
+	/* 时钟频率若超过24M,要开启此模式 */
   SDIO_InitStructure.SDIO_ClockBypass = SDIO_ClockBypass_Disable; 
 	
 	/* 若开启此功能，在总线空闲时关闭sd_clk时钟 */
@@ -648,7 +650,7 @@ SD_Error SD_PowerON(void)
 /********************************************************************************************************/   
   /* 下面发送一系列命令,开始卡识别流程
    * CMD0: GO_IDLE_STATE(复位所以SD卡进入空闲状态) 
-   * 没有响应  
+   * 没有相应 
 	 */
   SDIO_CmdInitStructure.SDIO_Argument = 0x0;
   SDIO_CmdInitStructure.SDIO_CmdIndex = SD_CMD_GO_IDLE_STATE;
@@ -1341,7 +1343,7 @@ SD_Error SD_ReadBlock(uint8_t *readbuff, uint64_t ReadAddr, uint16_t BlockSize)
 
   TransferError = SD_OK;
   TransferEnd = 0;	 //传输结束标置位，在中断服务置1
-  StopCondition = 0;  
+  StopCondition = 0;  //怎么用的？
   
   SDIO->DCTRL = 0x0;
 
@@ -2118,7 +2120,7 @@ SD_Error SD_SendSDStatus(uint32_t *psdstatus)
  */
 SD_Error SD_ProcessIRQSrc(void)
 {
-  if (StopCondition == 1)  
+  if (StopCondition == 1)  //什么时候置1了？
   {
     SDIO->ARG = 0x0;   //命令参数寄存器
     SDIO->CMD = 0x44C;	  // 命令寄存器： 0100 	01 	 	001100
@@ -2780,5 +2782,228 @@ uint8_t convert_from_bytes_to_power_of_two(uint16_t NumberOfBytes)
   }
   return(count);
 }
-		   
+
+
+/**
+ * @brief  Detect if SD card is correctly plugged in the memory slot.
+ * @param  None
+ * @retval Return if SD is detected or not
+ */
+uint8_t SD_Detect(void)
+{
+  __IO uint8_t status = SD_PRESENT;
+#if SD_USE_DETECT_PIN > 0
+  /*!< Check GPIO to detect SD */
+  if (GPIO_ReadInputDataBit(SD_DETECT_GPIO_PORT, SD_DETECT_PIN) != Bit_RESET) 
+  {
+    status = SD_NOT_PRESENT;
+  }
+#endif
+  return status;
+}
+
+/*************文件系统相关*****************/
+/*-----------------------------------------------------------------------------*/
+
+/*-----------------------------------------------------------------------------*/
+
+
+#define BLOCK_SIZE            512
+static volatile DSTATUS TM_FATFS_SD_SDIO_Stat = STA_NOINIT;	/* Physical drive status */
+
+
+uint8_t TM_FATFS_SDIO_WriteEnabled(void) {
+	return 1;	
+}
+
+DSTATUS TM_FATFS_SD_SDIO_disk_initialize(void) 
+{
+
+	NVIC_InitTypeDef NVIC_InitStructure;
+	
+	// Configure the NVIC Preemption Priority Bits 
+	NVIC_PriorityGroupConfig (NVIC_PriorityGroup_1);
+	NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init (&NVIC_InitStructure);
+
+	  
+	//Check disk initialized
+	if (SD_Init() == SD_OK) {
+		TM_FATFS_SD_SDIO_Stat &= ~STA_NOINIT;	/* Clear STA_NOINIT flag */
+	} else {
+		TM_FATFS_SD_SDIO_Stat |= STA_NOINIT;
+	}
+	//Check write protected
+	if (!TM_FATFS_SDIO_WriteEnabled()) {
+		TM_FATFS_SD_SDIO_Stat |= STA_PROTECT;
+	} else {
+		TM_FATFS_SD_SDIO_Stat &= ~STA_PROTECT;
+	}
+	return TM_FATFS_SD_SDIO_Stat;
+}
+
+DSTATUS TM_FATFS_SD_SDIO_disk_status(void)
+{
+	if (SD_Detect() != SD_PRESENT) {
+		return STA_NOINIT;
+	}
+	
+	if (!TM_FATFS_SDIO_WriteEnabled()) {
+		TM_FATFS_SD_SDIO_Stat |= STA_PROTECT;
+	} else {
+		TM_FATFS_SD_SDIO_Stat &= ~STA_PROTECT;
+	}
+	
+	return TM_FATFS_SD_SDIO_Stat;
+}
+
+
+DRESULT TM_FATFS_SD_SDIO_disk_read(BYTE *buff, DWORD sector, UINT count)
+{
+	SD_Error Status = SD_OK;
+
+	if ((TM_FATFS_SD_SDIO_Stat & STA_NOINIT)) {
+		return RES_NOTRDY;
+	}
+	
+	if ((DWORD)buff & 3) {
+		DRESULT res = RES_OK;
+		DWORD scratch[BLOCK_SIZE / 4];
+
+		while (count--) {
+			res = TM_FATFS_SD_SDIO_disk_read((void *)scratch, sector++, 1);
+
+			if (res != RES_OK) {
+				break;
+			}
+
+			memcpy(buff, scratch, BLOCK_SIZE);
+
+			buff += BLOCK_SIZE;
+		}
+
+		return res;
+	}
+
+	Status = SD_ReadMultiBlocks(buff, (uint64_t)sector << 9, BLOCK_SIZE, count);
+
+	if (Status == SD_OK) {
+		SDTransferState State;
+
+		Status = SD_WaitReadOperation();
+
+		while ((State = SD_GetStatus()) == SD_TRANSFER_BUSY);
+
+		if ((State == SD_TRANSFER_ERROR) || (Status != SD_OK)) {
+			return RES_ERROR;
+		} else {
+			return RES_OK;
+		}			
+	} else {
+		return RES_ERROR;
+	}
+}
+
+DRESULT TM_FATFS_SD_SDIO_disk_write(BYTE *buff, DWORD sector, UINT count)
+{
+	SD_Error Status = SD_OK;
+
+	if (!TM_FATFS_SDIO_WriteEnabled()) {
+		return RES_WRPRT;
+	}
+
+	if (SD_Detect() != SD_PRESENT) {
+		return RES_NOTRDY;
+	}
+
+	if ((DWORD)buff & 3) {
+		DRESULT res = RES_OK;
+		DWORD scratch[BLOCK_SIZE / 4];
+
+		while (count--) {
+			memcpy(scratch, buff, BLOCK_SIZE);
+			res = TM_FATFS_SD_SDIO_disk_write((void *)scratch, sector++, 1);
+
+			if (res != RES_OK) {
+				break;
+			}
+
+			buff += BLOCK_SIZE;
+		}
+
+		return(res);
+	}
+
+	Status = SD_WriteMultiBlocks((uint8_t *)buff, (uint64_t)sector << 9, BLOCK_SIZE, count); // 4GB Compliant
+
+	if (Status == SD_OK) {
+		SDTransferState State;
+
+		Status = SD_WaitWriteOperation(); // Check if the Transfer is finished
+
+		while ((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
+
+		if ((State == SD_TRANSFER_ERROR) || (Status != SD_OK)) {
+			return RES_ERROR;
+		} else {
+			return RES_OK;
+		}
+	} else {
+		return RES_ERROR;
+	}
+}
+
+DRESULT TM_FATFS_SD_SDIO_disk_ioctl(BYTE cmd, char *buff)
+{
+	switch (cmd) 
+	{
+		case GET_SECTOR_SIZE :     // Get R/W sector size (WORD) 
+			*(WORD * )buff = 512;
+		break;
+		case GET_BLOCK_SIZE :      // Get erase block size in unit of sector (DWORD)
+			*(DWORD * )buff = 1;
+		break;
+
+		case GET_SECTOR_COUNT:
+			*(DWORD * )buff = SDCardInfo.CardCapacity/SDCardInfo.CardBlockSize;
+			break;
+		case CTRL_SYNC :
+		break;
+	}
+	return RES_OK;
+}
+
+/**
+  * @brief  This function handles SDIO global interrupt request.
+  * @param  None
+  * @retval None
+  */
+void SDIO_IRQHandler(void)
+{
+  /* Process All SDIO Interrupt Sources */
+  SD_ProcessIRQSrc();
+}
+
+
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

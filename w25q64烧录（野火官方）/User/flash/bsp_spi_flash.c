@@ -1,4 +1,4 @@
-  /**
+ /**
   ******************************************************************************
   * @file    bsp_xxx.c
   * @author  STMicroelectronics
@@ -35,7 +35,7 @@ void SPI_FLASH_Init(void)
 	
 	/* 使能SPI引脚相关的时钟 */
  	FLASH_SPI_CS_APBxClock_FUN ( FLASH_SPI_CS_CLK|FLASH_SPI_SCK_CLK|
-																	FLASH_SPI_MISO_CLK|FLASH_SPI_MOSI_CLK, ENABLE );
+																	FLASH_SPI_MISO_PIN|FLASH_SPI_MOSI_PIN, ENABLE );
 	
   /* 配置SPI的 CS引脚，普通IO即可 */
   GPIO_InitStructure.GPIO_Pin = FLASH_SPI_CS_PIN;
@@ -67,7 +67,7 @@ void SPI_FLASH_Init(void)
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitStructure.SPI_CRCPolynomial = 7;
   SPI_Init(FLASH_SPIx , &SPI_InitStructure);
@@ -538,6 +538,138 @@ static  uint16_t SPI_TIMEOUT_UserCallback(uint8_t errorCode)
   FLASH_ERROR("SPI 等待超时!errorCode = %d",errorCode);
   return 0;
 }
+
+/***********文件系统相关**************/
+
+static volatile DSTATUS TM_FATFS_FLASH_SPI_Stat = STA_NOINIT;	/* Physical drive status */
+
+
+/*******************************************************************************
+* Function Name  : SPI_FLASH_Init
+* Description    : Initializes the peripherals used by the SPI FLASH driver.
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+DSTATUS TM_FATFS_FLASH_SPI_disk_initialize(void)
+{
+	uint16_t i;
+	
+	SPI_InitTypeDef  SPI_InitStructure;
+  GPIO_InitTypeDef GPIO_InitStructure;
+	
+	/* 使能SPI时钟 */
+	FLASH_SPI_APBxClock_FUN ( FLASH_SPI_CLK, ENABLE );
+	
+	/* 使能SPI引脚相关的时钟 */
+ 	FLASH_SPI_CS_APBxClock_FUN ( FLASH_SPI_CS_CLK|FLASH_SPI_SCK_CLK|
+																	FLASH_SPI_MISO_PIN|FLASH_SPI_MOSI_PIN, ENABLE );
+	
+  /* 配置SPI的 CS引脚，普通IO即可 */
+  GPIO_InitStructure.GPIO_Pin = FLASH_SPI_CS_PIN;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_Init(FLASH_SPI_CS_PORT, &GPIO_InitStructure);
+	
+  /* 配置SPI的 SCK引脚*/
+  GPIO_InitStructure.GPIO_Pin = FLASH_SPI_SCK_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_Init(FLASH_SPI_SCK_PORT, &GPIO_InitStructure);
+
+  /* 配置SPI的 MISO引脚*/
+  GPIO_InitStructure.GPIO_Pin = FLASH_SPI_MISO_PIN;
+  GPIO_Init(FLASH_SPI_MISO_PORT, &GPIO_InitStructure);
+
+  /* 配置SPI的 MOSI引脚*/
+  GPIO_InitStructure.GPIO_Pin = FLASH_SPI_MOSI_PIN;
+  GPIO_Init(FLASH_SPI_MOSI_PORT, &GPIO_InitStructure);
+
+  /* 停止信号 FLASH: CS引脚高电平*/
+  SPI_FLASH_CS_HIGH();
+
+  /* SPI 模式配置 */
+  // FLASH芯片 支持SPI模式0及模式3，据此设置CPOL CPHA
+  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+  SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
+  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
+  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;
+  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+  SPI_InitStructure.SPI_CRCPolynomial = 7;
+  SPI_Init(FLASH_SPIx , &SPI_InitStructure);
+
+  /* 使能 SPI  */
+  SPI_Cmd(FLASH_SPIx , ENABLE);
+
+
+	i=500;
+	while(--i);
+	
+	SPI_Flash_WAKEUP();
+	
+	return TM_FATFS_FLASH_SPI_disk_status();
+
+}
+
+DSTATUS TM_FATFS_FLASH_SPI_disk_status(void)
+{
+	FLASH_DEBUG_FUNC();
+	if(sFLASH_ID == SPI_FLASH_ReadID())			/*检测FLASH是否正常工作*/
+	{
+		return TM_FATFS_FLASH_SPI_Stat &= ~STA_NOINIT;	/* Clear STA_NOINIT flag */
+	}else
+	{
+		return TM_FATFS_FLASH_SPI_Stat |= STA_NOINIT;
+	}
+}
+
+DRESULT TM_FATFS_FLASH_SPI_disk_ioctl(BYTE cmd, char *buff)
+{
+
+
+	  FLASH_DEBUG_FUNC();
+	switch (cmd) {
+		case GET_SECTOR_COUNT:
+			*(DWORD * )buff = 1536;		//sector数量   
+		break;
+		case GET_SECTOR_SIZE :     // Get R/W sector size (WORD)
+
+			*(WORD * )buff = 4096;		//flash最小写单元为页，256字节，此处取2页为一个读写单位
+		break;
+		case GET_BLOCK_SIZE :      // Get erase block size in unit of sector (DWORD)
+			*(DWORD * )buff = 1;		//flash以1个sector为最小擦除单位
+		break;
+
+		case CTRL_SYNC :
+		break;
+	}
+	return RES_OK;
+}
+
+DRESULT TM_FATFS_FLASH_SPI_disk_read(BYTE *buff, DWORD sector, UINT count)
+{
+	FLASH_DEBUG_FUNC();
+	if ((TM_FATFS_FLASH_SPI_Stat & STA_NOINIT)) 
+	{
+		return RES_NOTRDY;
+	}
+	sector+=512;//扇区偏移，外部Flash文件系统空间放在外部Flash后面6M空间
+	SPI_FLASH_BufferRead(buff, sector <<12, count<<12);
+	return RES_OK;
+}
+
+DRESULT TM_FATFS_FLASH_SPI_disk_write(BYTE *buff, DWORD sector, UINT count)
+{
+	uint32_t write_addr;  
+	FLASH_DEBUG_FUNC();
+	sector+=512;//扇区偏移，外部Flash文件系统空间放在外部Flash后面6M空间
+	write_addr = sector<<12;    
+	SPI_FLASH_SectorErase(write_addr);
+	SPI_FLASH_BufferWrite(buff,write_addr,4096);
+	return RES_OK;
+}
+
    
 /*********************************************END OF FILE**********************/
-

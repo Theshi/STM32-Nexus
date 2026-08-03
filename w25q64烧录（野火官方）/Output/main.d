@@ -30,7 +30,11 @@
 ..\..\output\main.o: ..\..\Libraries\FWlib\inc\misc.h
 ..\..\output\main.o: ..\..\User\./usart/bsp_usart.h
 ..\..\output\main.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\stdio.h
-..\..\output\main.o: ..\..\User\./lcd/bsp_ili9341_lcd.h
-..\..\output\main.o: ..\..\User\./font/fonts.h
-..\..\output\main.o: ..\..\User\./font/fonts.h
 ..\..\output\main.o: ..\..\User\./flash/bsp_spi_flash.h
+..\..\output\main.o: ..\..\User\FATFS\diskio.h
+..\..\output\main.o: ..\..\User\FATFS\integer.h
+..\..\output\main.o: ..\..\User\./FATFS/ff.h
+..\..\output\main.o: ..\..\User\./FATFS/ffconf.h
+..\..\output\main.o: ..\..\User\./led/bsp_led.h
+..\..\output\main.o: ..\..\User\aux_data.h
+..\..\output\main.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\string.h
