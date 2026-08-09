@@ -699,7 +699,7 @@ I (..\..\Libraries\FWlib\inc\stm32f10x_spi.h)(0x6551DD3F)
 I (..\..\Libraries\FWlib\inc\stm32f10x_tim.h)(0x6551DD3F)
 I (..\..\Libraries\FWlib\inc\stm32f10x_usart.h)(0x6551DD3F)
 I (..\..\Libraries\FWlib\inc\misc.h)(0x6551DD3F)
-F (..\..\User\main.c)(0x6A70997B)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ..\..\Libraries\CMSIS -I ..\..\User -I ..\..\User\flash -I ..\..\User\led -I ..\..\Libraries\FWlib\inc -I ..\..\User\FATFS -I ..\..\User\FATFS\option-I.\RTE\_fatfs-ID:\Qianrushi\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\Qianrushi\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\..\output\main.o --omf_browse ..\..\output\main.crf --depend ..\..\output\main.d)
+F (..\..\User\main.c)(0x6A789AEA)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ..\..\Libraries\CMSIS -I ..\..\User -I ..\..\User\flash -I ..\..\User\led -I ..\..\Libraries\FWlib\inc -I ..\..\User\FATFS -I ..\..\User\FATFS\option-I.\RTE\_fatfs-ID:\Qianrushi\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\Qianrushi\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\..\output\main.o --omf_browse ..\..\output\main.crf --depend ..\..\output\main.d)
 I (..\..\Libraries\CMSIS\stm32f10x.h)(0x6551DD3F)
 I (..\..\Libraries\CMSIS\core_cm3.h)(0x6551DD3F)
 I (D:\Qianrushi\ARM\ARMCC\include\stdint.h)(0x588B8344)
@@ -728,6 +728,7 @@ I (..\..\Libraries\FWlib\inc\stm32f10x_tim.h)(0x6551DD3F)
 I (..\..\Libraries\FWlib\inc\stm32f10x_usart.h)(0x6551DD3F)
 I (..\..\Libraries\FWlib\inc\stm32f10x_wwdg.h)(0x6551DD3F)
 I (..\..\Libraries\FWlib\inc\misc.h)(0x6551DD3F)
+I (D:\Qianrushi\ARM\ARMCC\include\string.h)(0x588B8344)
 I (..\..\User\./usart/bsp_usart.h)(0x6551DD3F)
 I (D:\Qianrushi\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (..\..\User\./flash/bsp_spi_flash.h)(0x6551DD3F)
@@ -736,8 +737,8 @@ I (..\..\User\FATFS\integer.h)(0x6551DD3F)
 I (..\..\User\./FATFS/ff.h)(0x6551DD3F)
 I (..\..\User\./FATFS/ffconf.h)(0x6551DD3F)
 I (..\..\User\./led/bsp_led.h)(0x6551DD3F)
-I (..\..\User\aux_data.h)(0x6A7098DF)
-I (D:\Qianrushi\ARM\ARMCC\include\string.h)(0x588B8344)
+I (..\..\User\./key/bsp_key.h)(0x6551DD3F)
+I (..\..\User\aux_data.h)(0x6A7872C4)
 F (..\..\User\stm32f10x_it.c)(0x6551DD3F)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ..\..\Libraries\CMSIS -I ..\..\User -I ..\..\User\flash -I ..\..\User\led -I ..\..\Libraries\FWlib\inc -I ..\..\User\FATFS -I ..\..\User\FATFS\option-I.\RTE\_fatfs-ID:\Qianrushi\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\Qianrushi\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\..\output\stm32f10x_it.o --omf_browse ..\..\output\stm32f10x_it.crf --depend ..\..\output\stm32f10x_it.d)
 I (..\..\User\stm32f10x_it.h)(0x6551DD3F)
 I (..\..\Libraries\CMSIS\stm32f10x.h)(0x6551DD3F)
@@ -768,8 +769,8 @@ I (..\..\Libraries\FWlib\inc\stm32f10x_tim.h)(0x6551DD3F)
 I (..\..\Libraries\FWlib\inc\stm32f10x_usart.h)(0x6551DD3F)
 I (..\..\Libraries\FWlib\inc\stm32f10x_wwdg.h)(0x6551DD3F)
 I (..\..\Libraries\FWlib\inc\misc.h)(0x6551DD3F)
-F (..\..\User\aux_data.c)(0x6A70B727)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ..\..\Libraries\CMSIS -I ..\..\User -I ..\..\User\flash -I ..\..\User\led -I ..\..\Libraries\FWlib\inc -I ..\..\User\FATFS -I ..\..\User\FATFS\option-I.\RTE\_fatfs-ID:\Qianrushi\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\Qianrushi\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\..\output\aux_data.o --omf_browse ..\..\output\aux_data.crf --depend ..\..\output\aux_data.d)
-I (..\..\User\aux_data.h)(0x6A7098DF)
+F (..\..\User\aux_data.c)(0x6A735E39)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork --split_sections -I ..\..\Libraries\CMSIS -I ..\..\User -I ..\..\User\flash -I ..\..\User\led -I ..\..\Libraries\FWlib\inc -I ..\..\User\FATFS -I ..\..\User\FATFS\option-I.\RTE\_fatfs-ID:\Qianrushi\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\Qianrushi\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\..\output\aux_data.o --omf_browse ..\..\output\aux_data.crf --depend ..\..\output\aux_data.d)
+I (..\..\User\aux_data.h)(0x6A7872C4)
 I (..\..\Libraries\CMSIS\stm32f10x.h)(0x6551DD3F)
 I (..\..\Libraries\CMSIS\core_cm3.h)(0x6551DD3F)
 I (D:\Qianrushi\ARM\ARMCC\include\stdint.h)(0x588B8344)

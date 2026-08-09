@@ -1,0 +1,2 @@
+ENG_BT_16是CommercialScript BT 比较飘逸的字体
+ENG_UI是segoe UI Semibold字体比较适合菜单的部分

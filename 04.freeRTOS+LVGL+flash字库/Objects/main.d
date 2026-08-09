@@ -165,3 +165,5 @@
 .\objects\main.o: .\LVGL\src/extra/libs/ffmpeg/lv_ffmpeg.h
 .\objects\main.o: .\LVGL\port\lv_port_disp_template.h
 .\objects\main.o: .\LVGL\port\lv_port_indev_template.h
+.\objects\main.o: .\BSP\flash\bsp_spi_flash.h
+.\objects\main.o: User\flash_resource.h

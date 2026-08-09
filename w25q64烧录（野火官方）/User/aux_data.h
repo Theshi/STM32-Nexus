@@ -6,9 +6,9 @@
 #include "string.h"
 
 
-//SD����flash�ĸ�Ŀ¼
+//SD卡机器flash的根目录
 #define SD_ROOT       "0:"
-#define FLASH_ROOT    "1:"
+#define FLASH_ROOT    "1:"//这个烧录没有采用将falsh作为一个盘
 
 typedef enum 
 {
@@ -48,26 +48,25 @@ typedef struct
 
 
 /*
------------------flash�洢���Ĺ滮-------------------
-|��ʼ��ַ |  ��С |         ����                   |
-| -------: | ----: | --------------------           |
-| 0x000000 |   4KB | Resource Table����ԴĿ¼��      |
-| 0x001000 |   4KB | ϵͳ��Ϣ���汾����ԴCRC�ȣ�      |
-| 0x002000 |   2MB | ������                          |
-| 0x200000 |   1MB | ͼƬ��                          |
-| 0x300000 | 512KB | ͼ����                          |
-| 0x380000 |   2MB | Ԥ����Դ��                      |
-| 0x580000 | 512KB | �û�����                        |
-| 0x600000 |   2MB | �����������־                  |
+|     起始地址 |    大小 | 内容                   |
+| -------: | ----: | -------------------- |
+| 0x000000 |   4KB | Resource Table（资源目录） |
+| 0x001000 |   4KB | 系统信息（版本、资源CRC等）      |
+| 0x002000 |   2MB | 字体区                  |
+| 0x200000 |   1MB | 图片区                  |
+| 0x300000 | 512KB | 图标区                  |
+| 0x380000 |   2MB | 预留资源区                |
+| 0x580000 | 512KB | 用户数据                 |
+| 0x600000 |   2MB | 升级缓存或日志              |
 */
 
 typedef enum 
 {
     AUX_DATA_ERROR = -1,
-    AUX_ICON_BIN,//ͼ���ļ� 
-    AUX_CH_FONT_BIN,//��������
-    AUX_ENG_FONT_BIN,//Ӣ������ 
-    // AUX_FILE_SYSTEM,      //FATFS�ļ�ϵͳ����f103����ʱ����Ҫ
+    AUX_ICON_BIN,
+    AUX_CH_FONT_BIN,
+    AUX_ENG_FONT_BIN,
+    // AUX_FILE_SYSTEM,      //FATFS文件系统
   
     AUX_MAX_NUM,
 } aux_data_t; 
@@ -83,7 +82,7 @@ extern  Index_Enter       index_enter[AUX_TOTAL_FILES];
 extern  Index_Group       index_header[AUX_MAX_NUM];
 
 
-/*��Ϣ���*/
+/**/
 #define BURN_DEBUG_ON         0
 #define BURN_DEBUG_FUNC_ON    0
 
@@ -116,7 +115,7 @@ extern  Index_Group       index_header[AUX_MAX_NUM];
 #endif
   
 
-//���ڼ�������err��0����ת��LABEL��                                                     
+//用于检查参数，err非0就跳转到LABEL处                                                    
 #if( !defined( check ) )                                       
 #define require_noerr( ERR, LABEL )                                                                     \
     do                                                                                                  \

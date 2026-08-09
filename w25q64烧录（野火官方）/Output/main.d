@@ -28,6 +28,7 @@
 ..\..\output\main.o: ..\..\Libraries\FWlib\inc\stm32f10x_usart.h
 ..\..\output\main.o: ..\..\Libraries\FWlib\inc\stm32f10x_wwdg.h
 ..\..\output\main.o: ..\..\Libraries\FWlib\inc\misc.h
+..\..\output\main.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\string.h
 ..\..\output\main.o: ..\..\User\./usart/bsp_usart.h
 ..\..\output\main.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\stdio.h
 ..\..\output\main.o: ..\..\User\./flash/bsp_spi_flash.h
@@ -36,5 +37,5 @@
 ..\..\output\main.o: ..\..\User\./FATFS/ff.h
 ..\..\output\main.o: ..\..\User\./FATFS/ffconf.h
 ..\..\output\main.o: ..\..\User\./led/bsp_led.h
+..\..\output\main.o: ..\..\User\./key/bsp_key.h
 ..\..\output\main.o: ..\..\User\aux_data.h
-..\..\output\main.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\string.h

@@ -337,7 +337,7 @@
               <MiscControls>--no-multibyte-chars</MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Start;.\User;.\Library;.\System;.\FreeRTOS\portable;.\FreeRTOS\src;.\Hardware;.\Task;.\Hardware\Mpu6050;.\BSP;.\LVGL;.\LVGL\port;.\LVGL\src</IncludePath>
+              <IncludePath>.\Start;.\User;.\Library;.\System;.\FreeRTOS\portable;.\FreeRTOS\src;.\Task;.\Hardware\Mpu6050;.\BSP;.\LVGL;.\LVGL\port;.\LVGL\src;.\BSP\flash</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -657,6 +657,16 @@
               <FilePath>.\User\main.c</FilePath>
             </File>
             <File>
+              <FileName>flash_resource.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\flash_resource.c</FilePath>
+            </File>
+            <File>
+              <FileName>flash_resource.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\flash_resource.h</FilePath>
+            </File>
+            <File>
               <FileName>stm32f10x_conf.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\User\stm32f10x_conf.h</FilePath>
@@ -860,6 +870,16 @@
               <FileName>bsp_xpt2046_lcd.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\BSP\bsp_xpt2046_lcd.h</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_spi_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\flash\bsp_spi_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_spi_flash.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\BSP\flash\bsp_spi_flash.h</FilePath>
             </File>
           </Files>
         </Group>
