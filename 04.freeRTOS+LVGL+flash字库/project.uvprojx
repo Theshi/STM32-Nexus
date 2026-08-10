@@ -686,6 +686,41 @@
               <FileType>5</FileType>
               <FilePath>.\User\FreeRTOSConfig.h</FilePath>
             </File>
+            <File>
+              <FileName>flash_font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\flash_font.c</FilePath>
+            </File>
+            <File>
+              <FileName>flash_font.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\flash_font.h</FilePath>
+            </File>
+            <File>
+              <FileName>my_font_SCH_16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\my_font_SCH_16.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_font_ENG_BT_16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\my_font_ENG_BT_16.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_font_ENG_UI_16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\my_font_ENG_UI_16.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_font_ENG_UI_28.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\my_font_ENG_UI_28.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_font_ENG_UI_36.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\my_font_ENG_UI_36.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

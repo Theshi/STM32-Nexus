@@ -14,6 +14,13 @@
 #include "bsp_spi_flash.h"
 #include "flash_resource.h"
 
+/* 外部字库接口（XBF 格式）：glyphs 从 W25Q64 SPI flash 实时读取，见 User/my_font_*.c */
+extern const lv_font_t my_font_SCH_16;
+extern const lv_font_t my_font_ENG_BT_16;
+extern const lv_font_t my_font_ENG_UI_16;
+extern const lv_font_t my_font_ENG_UI_28;
+extern const lv_font_t my_font_ENG_UI_36;
+
 //启动任务
 #define StartUpTask_STACKSIZE 256
 #define StartUpTask_PRIO			1
@@ -79,7 +86,33 @@ void LVGL_Icon_Test(const char *name){
 
 	lv_obj_t * img = lv_img_create(lv_scr_act());
 	lv_img_set_src(img, &dsc);
-	lv_obj_center(img);
+	/* 移到右上角，避免挡住下面的字库显示测试 */
+	lv_obj_align(img, LV_ALIGN_TOP_RIGHT, -8, 60);
+}
+
+/* 字库显示测试：中英文都从 W25Q64 实时读字模（__user_font_getdata -> flash_font_getdata）。
+ * 注意：烧录的字库不含空格(0x20)，英文空格由 fallback（montserrat）提供；
+ *      中文测试串选用字库内含的字（"你好世界" 不在烧录的字符集里）。 */
+void LVGL_Font_Test(void){
+	static const struct {
+		const char *txt;
+		const lv_font_t *f;
+		int y;
+	} rows[] = {
+		/* 屏幕是 320x240 横屏，5 行全部排在 240 高度内（行高 26/28/47/61/29） */
+		{ "hello world", &my_font_ENG_BT_16,  12 },
+		{ "hello world", &my_font_ENG_UI_16,  42 },
+		{ "hello",       &my_font_ENG_UI_28,  76 },
+		{ "hello",       &my_font_ENG_UI_36, 130 },
+		{ "数据显示",     &my_font_SCH_16,    200 },
+	};
+	uint8_t i;
+	for(i = 0; i < sizeof(rows)/sizeof(rows[0]); i++){
+		lv_obj_t * lb = lv_label_create(lv_scr_act());
+		lv_label_set_text(lb, rows[i].txt);
+		lv_obj_set_style_text_font(lb, rows[i].f, 0);
+		lv_obj_align(lb, LV_ALIGN_TOP_LEFT, 10, rows[i].y);
+	}
 }
 
 int main(){
@@ -91,6 +124,8 @@ int main(){
 	/* 屏幕背景设为纯白（默认主题是浅灰），让白底图标与背景无缝融合 */
 	lv_obj_set_style_bg_color(lv_scr_act(), lv_color_white(), 0);
 	lv_obj_set_style_bg_opa(lv_scr_act(), LV_OPA_COVER, 0);
+	/* 关闭根屏幕滚动：固定布局菜单，内容都在可视区内，避免误拖/惯性滑动 */
+	lv_obj_clear_flag(lv_scr_act(), LV_OBJ_FLAG_SCROLLABLE);
 	lv_port_indev_init();
 	
 	SPI_FLASH_Init();
@@ -105,8 +140,10 @@ int main(){
 	Flash_AreaDump(0x308000, 512);   /* left 图标区 */
 	Flash_AreaDump(0x002000, 16);    /* sch16 字库 XBF 头 */
 	Flash_AreaDump(0x08D000, 16);    /* eng_bt16 字库 XBF 头 */
-	/* Flash 内容已确认完整，启用图标显示测试（alarm 50x50 居中） */
+	/* Flash 内容已确认完整，启用图标显示测试（alarm 50x50 右上角） */
 	LVGL_Icon_Test("alarm");
+	/* 字库显示测试：英文 4 款 + 中文字库，全部从 W25Q64 读字模 */
+	LVGL_Font_Test();
 	printf("屏幕初始化完毕..\n");
 	
 	SysTick_Init();

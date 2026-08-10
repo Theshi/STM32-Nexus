@@ -242,7 +242,7 @@
  * Others
  *-----------*/
 
-/*1: Show CPU usage and FPS count 显示CPU使用率和FPS的帧率 */
+/*1: Show CPU usage and FPS count 锟斤拷示CPU使锟斤拷锟绞猴拷FPS锟斤拷帧锟斤拷 */
 #define LV_USE_PERF_MONITOR 1
 #if LV_USE_PERF_MONITOR
     #define LV_USE_PERF_MONITOR_POS LV_ALIGN_BOTTOM_RIGHT

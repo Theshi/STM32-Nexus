@@ -8,11 +8,11 @@
 #include <stdio.h>
 
 /* 索引表读回后的 RAM 副本（672B） */
-static Res_Index_Group res_hdr[RES_AREA_NUM];
-static Res_Index_Enter res_ent[RES_TOTAL_FILES];
+static Res_Index_Group res_hdr[RES_AREA_NUM];//一级索引副本
+static Res_Index_Enter res_ent[RES_TOTAL_FILES];//二级索引副本
 static uint8_t res_loaded = 0;
 
-/* ---------------- 期望值（烧录验证过的权威数据） ---------------- */
+/* ---------------- 测试数据的正确---------------- */
 
 static const Res_Index_Group exp_hdr[RES_AREA_NUM] = {
     { 0xAABBCCDD, 1, 20, 0x300000, 0,    512 * 1024 },  /* 图标区 */
