@@ -49,10 +49,11 @@ void Screen_Switch(SCREEN_ID next);
   - 上卡 = `current->prev`，中卡 = `current`，下卡 = `current->next`
   - 每卡 = 图标 + 名字 label
   - 重渲染 = 清旧三卡 → 画新三卡（旧的图标缓冲释放、新的分配）
-- **交互**（A 方案：按钮与卡片重合）：三个透明按钮叠在三张卡上
+- **交互**（卡片本身即按钮，不另建透明按钮）：三张卡都加 `LV_OBJ_FLAG_CLICKABLE` + 事件回调
   - 上卡点按 → `Menu_Prev()` → 重新渲染
   - 下卡点按 → `Menu_Next()` → 重新渲染
   - 中卡点按 → `Menu_Select()` → 进入 app
+  - 省 RAM：卡片对象兼做按钮，省掉 3 个透明按钮对象（~0.6KB）
 - **返回**：菜单屏"返回"按钮 → `Screen_Switch(MAIN)`。
 
 ### 4. 数据流（事件 → 状态 → 重绘）
@@ -77,5 +78,5 @@ lv_timer_handler() 周期把变化画上屏
 
 ## 后续扩展（非本次范围）
 
-- 实体 HOME 键一键回初始界面（RAM 宽裕后）。
+- 实体按键导航（next/prev/select/back + HOME 一键回初始界面），硬件接入后替换或补充触摸输入。
 - 层级菜单（链表 `parent`/`child` 字段接入，做子菜单导航）。
