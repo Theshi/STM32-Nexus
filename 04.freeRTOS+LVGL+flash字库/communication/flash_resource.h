@@ -4,6 +4,8 @@
 #include "stm32f10x.h"
 #include <string.h>
 
+#include "lvgl.h"
+
 /* 资源区域数 / 总文件数（与烧录工程 aux_data.h 一致） */
 #define RES_AREA_NUM       3
 #define RES_TOTAL_FILES    25
@@ -31,6 +33,19 @@ typedef struct {
 /* 初始化：从 Flash 0x000000 读索引表进 RAM（672B），返回 0 成功 */
 uint8_t Flash_Resource_Init(void);
 
+lv_obj_t *ui_icon(const char*name,//图标的名称
+                 lv_obj_t *parent,//挂载的父对象
+                 lv_align_t align,//图标的对齐方式
+                 lv_coord_t x,//图标的x坐标
+                 lv_coord_t y//图标的y坐标
+);
+lv_obj_t *ui_font(lv_obj_t *parent,//挂载的父对象
+                  const char *txt,//显示的文本
+                  const lv_font_t *font,//字体
+                  lv_align_t align,//对齐方式
+                  lv_coord_t x,//x坐标
+                  lv_coord_t y//y坐标
+);
 /* 按名字查资源，找到返回 1 并输出 addr/size；未找到返回 0 */
 uint8_t Flash_FindResource(const char *name, uint32_t *addr, uint32_t *size);
 

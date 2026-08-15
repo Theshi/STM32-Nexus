@@ -5,12 +5,19 @@
  */
 #include "flash_resource.h"
 #include "bsp_spi_flash.h"
+
+#include "lvgl.h"
+#include "lv_port_disp_template.h"
+#include "lv_port_indev_template.h"
+
 #include <stdio.h>
 
 /* 索引表读回后的 RAM 副本（672B） */
 static Res_Index_Group res_hdr[RES_AREA_NUM];//一级索引副本
 static Res_Index_Enter res_ent[RES_TOTAL_FILES];//二级索引副本
 static uint8_t res_loaded = 0;
+
+#define TEST_CODE 0//测试程序
 
 /* ---------------- 测试数据的正确---------------- */
 
@@ -75,8 +82,76 @@ uint8_t Flash_FindResource(const char *name, uint32_t *addr, uint32_t *size)
     return 0;
 }
 
-/* ---------------- 测试 ---------------- */
+/* ---------------- LVGL调用显示外部图标 ---------------- */
+/* 图标显示测试：从 Flash 读图标 bin（4B 头 + RGB565 像素）并显示
+ * icon_buf/dsc 必须 static：lv_img_set_src 引用结构体与数据指针，不会拷贝 */
+lv_obj_t *ui_icon(const char*name,//图标的名称
+                 lv_obj_t *parent,//挂载的父对象
+                 lv_align_t align,//图标的对齐方式
+                 lv_coord_t x,//图标的x坐标
+                 lv_coord_t y//图标的y坐标
+)
+{
+    
+	static lv_img_dsc_t dsc;
+	uint32_t addr, size, hdr, cf, w, h;
 
+	if(!Flash_FindResource(name, &addr, &size)){
+		printf("icon [%s] not found!\r\n", name);
+		return NULL;
+	}
+
+    uint8_t *icon_buf=lv_mem_alloc(size);          /* 最大图标 60×60×2+4 = 7204B */
+    if(!icon_buf) return NULL;
+
+	printf("read icon [%s]: addr=0x%06X size=%d\r\n", name, addr, size);
+	SPI_FLASH_BufferRead(icon_buf, addr, size);
+
+	/* 解析 4 字节打包位域（小端） */
+	hdr = icon_buf[0] | (icon_buf[1]<<8) | (icon_buf[2]<<16) | ((uint32_t)icon_buf[3]<<24);
+	cf  = hdr & 0x1F;                        /* 应为 4 = LV_IMG_CF_TRUE_COLOR */
+	w   = (hdr >> 10) & 0x7FF;
+	h   = (hdr >> 21) & 0x7FF;
+	printf("icon hdr: cf=%d w=%d h=%d data=%d\r\n", cf, w, h, w*h*2);
+
+	dsc.header.always_zero = 0;
+	dsc.header.cf    = LV_IMG_CF_TRUE_COLOR;
+	dsc.header.w     = w;
+	dsc.header.h     = h;
+	dsc.data_size    = w*h*2;
+	dsc.data         = &icon_buf[4];
+
+	lv_obj_t * img = lv_img_create(parent);
+	lv_img_set_src(img, &dsc);
+	/* 移到右上角，避免挡住下面的字库显示测试 */
+	lv_obj_align(img, align, x, y);
+
+    return img;
+}
+
+//调用外部字库的API封装
+/* 字库显示测试：中英文都从 W25Q64 实时读字模（__user_font_getdata -> flash_font_getdata）。
+ * 注意：烧录的字库不含空格(0x20)，英文空格由 fallback（montserrat）提供；
+ *      中文测试串选用字库内含的字（"你好世界" 不在烧录的字符集里）。 */
+
+lv_obj_t *ui_font(lv_obj_t *parent,//挂载的父对象
+                  const char *txt,//显示的文本
+                  const lv_font_t *font,//字体
+                  lv_align_t align,//对齐方式
+                  lv_coord_t x,//x坐标
+                  lv_coord_t y//y坐标
+)
+{   
+
+		lv_obj_t * lb = lv_label_create(parent);
+		lv_label_set_text(lb, txt);
+		lv_obj_set_style_text_font(lb, font, 0);
+		lv_obj_align(lb, align, x,y);
+        return lb;
+}
+
+/* ---------------- 测试 ---------------- */
+#if TEST_CODE == 1
 uint8_t Flash_Index_Test(void)
 {
     uint8_t i, k, fail = 0;
@@ -155,3 +230,4 @@ void Flash_AreaDump(uint32_t addr, uint32_t check_len)
     printf("  non-0xFF bytes in %d byte window @0x%06X: %d\r\n",
            check_len, addr, nonff);
 }
+#endif

@@ -1,5 +1,5 @@
-.\objects\bsp_usart.o: BSP\bsp_usart.c
-.\objects\bsp_usart.o: BSP\bsp_usart.h
+.\objects\bsp_usart.o: BSP\usart\bsp_usart.c
+.\objects\bsp_usart.o: BSP\usart\bsp_usart.h
 .\objects\bsp_usart.o: .\Start\stm32f10x.h
 .\objects\bsp_usart.o: .\Start\core_cm3.h
 .\objects\bsp_usart.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\stdint.h

@@ -1,5 +1,5 @@
-.\objects\flash_font.o: User\flash_font.c
-.\objects\flash_font.o: User\flash_font.h
+.\objects\flash_font.o: BSP\fonts\flash_font.c
+.\objects\flash_font.o: BSP\fonts\flash_font.h
 .\objects\flash_font.o: D:\Qianrushi\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\flash_font.o: .\BSP\flash\bsp_spi_flash.h
 .\objects\flash_font.o: .\Start\stm32f10x.h

@@ -1,4 +1,4 @@
-.\objects\my_font_eng_ui_28.o: User\my_font_ENG_UI_28.c
+.\objects\my_font_eng_ui_28.o: BSP\fonts\my_font_ENG_UI_28.c
 .\objects\my_font_eng_ui_28.o: .\LVGL\lvgl.h
 .\objects\my_font_eng_ui_28.o: .\LVGL\src/misc/lv_log.h
 .\objects\my_font_eng_ui_28.o: .\LVGL\src/misc/../lv_conf_internal.h
@@ -122,4 +122,4 @@
 .\objects\my_font_eng_ui_28.o: .\LVGL\src/extra/libs/freetype/lv_freetype.h
 .\objects\my_font_eng_ui_28.o: .\LVGL\src/extra/libs/rlottie/lv_rlottie.h
 .\objects\my_font_eng_ui_28.o: .\LVGL\src/extra/libs/ffmpeg/lv_ffmpeg.h
-.\objects\my_font_eng_ui_28.o: User\flash_font.h
+.\objects\my_font_eng_ui_28.o: BSP\fonts\flash_font.h

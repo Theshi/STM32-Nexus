@@ -40,8 +40,8 @@
 .\objects\main.o: .\FreeRTOS\src\mpu_wrappers.h
 .\objects\main.o: .\FreeRTOS\src\task.h
 .\objects\main.o: .\FreeRTOS\src\list.h
-.\objects\main.o: .\BSP\bsp_usart.h
-.\objects\main.o: .\BSP\bsp_ili9341_lcd.h
+.\objects\main.o: .\BSP\usart\bsp_usart.h
+.\objects\main.o: .\BSP\lcd\bsp_ili9341_lcd.h
 .\objects\main.o: .\LVGL\lvgl.h
 .\objects\main.o: .\LVGL\src/misc/lv_log.h
 .\objects\main.o: .\LVGL\src/misc/../lv_conf_internal.h
@@ -166,4 +166,4 @@
 .\objects\main.o: .\LVGL\port\lv_port_disp_template.h
 .\objects\main.o: .\LVGL\port\lv_port_indev_template.h
 .\objects\main.o: .\BSP\flash\bsp_spi_flash.h
-.\objects\main.o: User\flash_resource.h
+.\objects\main.o: .\communication\flash_resource.h
